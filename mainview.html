@@ -1,0 +1,3384 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #f9f9f9;
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --text-muted: #aaaaaa;
+      --border-color: #cccccc;
+      --border-light: #eeeeee;
+      --accent-primary: #007bff;
+      --accent-hover: #0056b3;
+      --accent-danger: #dc3545;
+      --accent-danger-hover: #c82333;
+      --accent-success: #28a745;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --modal-bg: rgba(0, 0, 0, 0.7);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --bg-tertiary: #252525;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --text-muted: #888888;
+        --border-color: #444444;
+        --border-light: #333333;
+        --accent-primary: #0d6efd;
+        --accent-hover: #0b5ed7;
+        --accent-danger: #dc3545;
+        --accent-danger-hover: #bb2d3b;
+        --accent-success: #198754;
+        --shadow: rgba(0, 0, 0, 0.3);
+        --modal-bg: rgba(0, 0, 0, 0.8);
+      }
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: sans-serif;
+    }
+
+    .tooltip {
+      margin-left: 4px;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: help;
+      gap: 4px;
+    }
+
+    .tooltip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: var(--text-secondary);
+      color: var(--bg-primary);
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 220px;
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      text-align: center;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1000;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.8rem;
+      font-weight: normal;
+      line-height: 1.3;
+      white-space: normal;
+      word-wrap: break-word;
+      border: 1px solid var(--border-color);
+    }
+
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--bg-tertiary) transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .events-filter {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+
+    .events-filter label {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .events-filter select {
+      padding: 6px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 14px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+      min-width: 120px;
+    }
+
+    .camera-card .detection-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 10px;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .camera-card .detection-toggle input[type="checkbox"] {
+      margin: 0;
+      transform: scale(1.1);
+    }
+
+      #alertsModal .modal-content {
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        font-family: sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
+    #alertsModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    #alertsModal .modal-header h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: var(--text-primary);
+    }
+
+    #alertsModal .close {
+      color: var(--text-muted);
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #alertsModal .close:hover {
+      color: var(--text-primary);
+    }
+
+    #alertsModal .modal-body {
+      padding: 10px 0;
+    }
+
+    #alertsModal h3 {
+      margin: 20px 0 10px;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    #alertsContainer table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+    }
+
+    #alertsContainer th {
+      background: var(--bg-secondary);
+      padding: 8px;
+      text-align: left;
+      border-bottom: 2px solid var(--border-color);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .camera-card .icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    #alertsContainer td {
+      padding: 8px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    #alertsContainer button {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: sans-serif;
+    }
+
+    #alertsContainer button:hover {
+      background: var(--accent-hover);
+    }
+
+    #alertsContainer .delete-button {
+      background: var(--accent-danger);
+    }
+
+    #alertsContainer .delete-button:hover {
+      background: var(--accent-danger-hover);
+    }
+
+    #alertsContainer input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    .counts-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin: 20px 0;
+      padding: 15px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+    }
+
+    #objectCounts {
+      font-size: 0.95rem;
+      border-collapse: collapse;
+    }
+
+    #objectCounts td {
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .counts-wrapper button {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: sans-serif;
+    }
+
+    .counts-wrapper button:hover {
+      background: var(--accent-hover);
+    }
+
+    #alertModal .modal-content {
+      max-width: 400px;
+      max-height: 85vh;
+      overflow-y: auto;
+      font-family: sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    #alertModal .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    #alertModal .modal-header h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: var(--text-primary);
+    }
+
+    #alertModal .close {
+      color: var(--text-muted);
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #alertModal .close:hover {
+      color: var(--text-primary);
+    }
+
+    #alertModal .form-group {
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    #alertModal label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+
+    #alertModal input[type="number"],
+    #alertModal input[type="time"] {
+      padding: 6px 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      text-align: center;
+      font-family: sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    #alertModal input[type="number"] {
+      width: 70px;
+    }
+
+    #alertModal input[type="time"] {
+      width: 100px;
+    }
+
+    #alertModal .checkbox-container {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 12px;
+          max-height: 150px;
+          overflow-y: auto;
+          margin: 8px auto;
+          padding: 8px;
+          border: 1px solid var(--border-light);
+          border-radius: 4px;
+          background: var(--bg-secondary);
+        }
+
+    #alertModal .checkbox-container label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+      font-weight: normal;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    #alertModal .checkbox-container input[type="checkbox"] {
+      margin: 0;
+      transform: scale(1.1);
+      cursor: pointer;
+    }
+
+    #alertModal .days-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    #alertModal .days-container label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0;
+      font-weight: normal;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    #alertModal .days-container input[type="checkbox"] {
+      margin: 0;
+      transform: scale(1.1);
+      cursor: pointer;
+    }
+
+    #alertModal .form-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px 0;
+    }
+
+    #alertModal button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: sans-serif;
+      transition: background-color 0.2s;
+    }
+
+    #alertModal button[type="button"] {
+      background: var(--text-secondary);
+      color: white;
+    }
+
+    #alertModal button[type="button"]:hover {
+      background: var(--text-muted);
+    }
+
+    #alertModal button[type="submit"] {
+      background: var(--accent-primary);
+      color: white;
+    }
+
+    #alertModal button[type="submit"]:hover {
+      background: var(--accent-hover);
+    }
+
+    .camera-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .camera-card {
+      width: 480px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px var(--shadow);
+      text-align: center;
+      font-family: sans-serif;
+      background: var(--bg-primary);
+    }
+
+    .camera-card .video-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      position: relative;
+    }
+
+    .camera-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: black;
+    }
+
+    .camera-card .video-placeholder {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      font-size: 14px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .camera-card .camera-info {
+      padding: 12px;
+      background: var(--bg-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .camera-card .camera-name {
+      font-weight: bold;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 18px;
+      cursor: default;
+    }
+
+    .camera-card .camera-name:hover {
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .camera-card button {
+      padding: 8px 16px;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .camera-card button:hover {
+      background: var(--accent-hover);
+    }
+
+    .camera-card button.delete-button {
+      background: var(--accent-danger);
+    }
+
+    .camera-card button.delete-button:hover {
+      background: var(--accent-danger-hover);
+    }
+
+    .form-section {
+      margin-top: 20px;
+      font-family: sans-serif;
+    }
+
+    .form-section input {
+      padding: 6px;
+      margin: 4px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      width: 200px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .form-section button {
+      padding: 6px 12px;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-section button:hover {
+      background: var(--accent-hover);
+    }
+
+    .shutdown-wrapper {
+      margin-top: 20px;
+    }
+
+    #zoneModal button {
+        padding: 8px 16px;
+        background: var(--accent-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-family: sans-serif;
+    }
+
+    #zoneModal button:hover {
+        background: var(--accent-hover);
+    }
+
+    #zoneModal button.clear-zone-button {
+        background: var(--accent-danger);
+    }
+
+    #zoneModal button.clear-zone-button:hover {
+        background: var(--accent-danger-hover);
+    }
+
+    #zoneModal label {
+        font-family: sans-serif;
+        font-size: 14px;
+        color: var(--text-primary);
+    }
+
+    #zoneModal input[type="number"] {
+        padding: 6px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+    }
+
+    #zoneModal input[type="checkbox"] {
+        margin: 0;
+    }
+
+    #zoneModal h3 {
+        font-family: sans-serif;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    #zoneModal .modal-header h3 {
+        font-family: sans-serif;
+        color: var(--text-primary);
+    }
+
+    #zoneModal div {
+        font-family: sans-serif;
+        color: var(--text-primary);
+    }
+
+    #zoneModal {
+        font-family: sans-serif;
+    }
+
+    #zoneModal .modal-content {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+    }
+
+    /* Multi-view overlay grid */
+    #multiView {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: black;
+      z-index: 9999;
+      padding: 10px;
+      box-sizing: border-box;
+      justify-content: center;
+      align-items: center;
+      grid-gap: 10px;
+    }
+
+    #multiView.active {
+      display: grid;
+      justify-items: center;
+      align-items: center;
+    }
+
+    #multiView .video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #multiView video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: black;
+    }
+
+    .multi-view-wrapper {
+      margin-top: 10px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .multi-view-wrapper button {
+      padding: 6px 12px;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .multi-view-wrapper button:hover {
+      background: var(--accent-hover);
+    }
+
+    .date-picker-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .date-picker-container input {
+      padding: 6px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 14px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    /* Event Images Styles */
+    .events-section {
+      margin-top: 20px;
+      font-family: sans-serif;
+    }
+
+    .events-section h3 {
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+
+    #eventImagesContainer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: flex-start;
+      width: 100%;
+    }
+
+    .event-image-item {
+      position: relative;
+      width: 220px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      background: var(--bg-primary);
+      box-shadow: 0 2px 4px var(--shadow);
+      transition: transform 0.2s;
+    }
+
+    .event-image-item:hover {
+      transform: scale(1.05);
+    }
+
+    .event-image-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      background: black;
+      cursor: pointer;
+    }
+
+    .event-image-info {
+      padding: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .event-image-actions {
+      display: flex;
+      gap: 6px;
+      padding: 8px;
+      justify-content: space-between;
+    }
+
+    .event-image-actions button {
+      padding: 6px;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-image-actions button:hover {
+      background: var(--accent-hover);
+    }
+
+    #imagePreviewModal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--modal-bg);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #previewImage {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+    }
+
+    .close-preview {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-preview:hover {
+      color: #ccc;
+    }
+    
+    /* Icon styles */
+    .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+    }
+
+    .icon svg {
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--modal-bg);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: var(--bg-primary);
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 4px 8px var(--shadow);
+        margin: auto;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    .close {
+        color: var(--text-muted);
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        color: var(--text-primary);
+    }
+
+    .date-picker-container select {
+      padding: 6px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 14px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+      min-width: 120px;
+    }
+
+    .date-picker-container select:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+
+    @media (max-width: 768px) {
+      .load-more-btn {
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 10;
+      }
+
+      .events-section {
+        padding-bottom: 20px;
+      }
+
+      .multi-view-button, 
+      [data-testid="multi-view"],
+      #multi-view-toggle,
+      .split-view-toggle {
+        display: none !important;
+      }
+
+      .multi-view-wrapper button:first-child {
+        display: none !important;
+      }
+  
+
+      #zoneModal .form-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+      }
+
+      #zoneModal .form-actions > div:last-child {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        width: 100% !important;
+        flex-wrap: nowrap !important;
+      }
+
+      #zoneModal .form-actions button {
+        flex: 1 !important;
+        width: auto !important;
+        padding: 10px 8px !important;
+        font-size: 16px !important;
+        white-space: nowrap !important;
+      }
+
+      #alertsModal .modal-content {
+        zoom: 0.85 !important;
+        transform-origin: top center !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        padding: 10px !important;
+        max-height: 100vh !important;
+        overflow-y: auto !important;
+      }
+      
+      #alertsContainer table {
+        font-size: 0.75rem !important;
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      
+      #alertsContainer th,
+      #alertsContainer td {
+        padding: 4px 6px !important;
+        min-width: 60px !important;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        font-size: 16px !important;
+      }
+      .camera-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 0 10px !important;
+        flex-wrap: nowrap !important;
+      }
+      .camera-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: unset !important;
+        margin: 0 auto !important;
+      }
+      .camera-info {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        padding: 10px !important;
+      }
+      
+      .camera-card .button-group {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+      }
+
+      .icon-button {
+        padding: 10px 15px !important;
+        font-size: 16px !important;
+        flex: 1 !important;
+        min-width: 60px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      
+      .detection-toggle {
+        margin-left: 0 !important;
+        margin-bottom: 8px !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+      }
+      
+      .form-section {
+        padding: 0 10px !important;
+        margin-top: 15px !important;
+      }
+      
+      .form-section input {
+        width: calc(100% - 12px) !important;
+        margin: 4px 0 !important;
+        box-sizing: border-box !important;
+      }
+      
+      .max-storage-control {
+        width: 100% !important;
+        margin-top: 15px !important;
+        padding: 0 10px !important;
+        box-sizing: border-box !important;
+      }
+      
+      .max-storage-control > div {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+      }
+      
+      .max-storage-control label {
+        width: 100% !important;
+        margin-bottom: 6px !important;
+        font-size: 14px !important;
+      }
+      
+      .max-storage-control input {
+        width: 60% !important;
+        flex: 1 !important;
+        margin: 0 !important;
+        min-width: 0 !important;
+      }
+      
+      #setMaxStorageBtn {
+        width: 35% !important;
+        min-width: 80px !important;
+        padding: 8px 12px !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+      }
+      
+      .events-section {
+        padding: 0 10px !important;
+        margin-top: 15px !important;
+      }
+      
+      #eventImagesContainer {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 15px !important;
+        flex-wrap: nowrap !important;
+      }
+      
+      .event-image-item {
+        width: 100% !important;
+        max-width: 400px !important;
+      }
+      
+      .event-image-item img {
+        height: 180px !important;
+      }
+      
+      .events-filter {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        flex-wrap: nowrap !important;
+      }
+      
+      .filter-group {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+      }
+      
+      .events-filter select {
+        width: 100% !important;
+        min-width: unset !important;
+      }
+      
+      .events-filter > label,
+      .events-filter > div {
+        width: 100% !important;
+      }
+      
+      .multi-view-wrapper {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        padding: 0 10px !important;
+        margin-top: 15px !important;
+      }
+      
+      .date-picker-container {
+        width: 100% !important;
+      }
+      
+      .date-picker-container select {
+        width: 100% !important;
+      }
+      
+      .modal-content {
+        width: 95% !important;
+        padding: 15px !important;
+        max-width: 95% !important;
+      }
+
+      #alertsContainer table {
+        font-size: 0.8rem !important;
+      }
+      
+      #alertsContainer th,
+      #alertsContainer td {
+        padding: 6px 4px !important;
+      }
+
+      #zoneModal .modal-content {
+        max-width: 95% !important;
+        padding: 15px !important;
+      }
+      
+      #zonePreview {
+        max-height: 300px !important;
+      }
+
+      .shutdown-wrapper button {
+        width: 100% !important;
+        padding: 10px !important;
+        font-size: 16px !important;
+        margin-top: 10px !important;
+      }
+
+      #imageSearchInput {
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .counts-wrapper {
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 10px !important;
+      }
+      
+      #objectCounts {
+        width: 100% !important;
+      }
+  
+      .tooltip .tooltiptext {
+        width: 280px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+      }
+      
+      .camera-name {
+        font-size: 16px !important;
+        margin-bottom: 5px !important;
+      }
+
+      .form-section button:not(#setMaxStorageBtn):not(.icon-button) {
+        width: 100% !important;
+        padding: 10px !important;
+        margin-top: 5px !important;
+      }
+ 
+      #addCameraForm {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      
+      .icon {
+        width: 20px !important;
+        height: 20px !important;
+      }
+
+      #addCameraForm button[type="submit"] {
+        width: 100% !important;
+        padding: 12px !important;
+        font-size: 16px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+
+      #alertsModal .modal-content {
+        zoom: 0.7 !important;
+        padding: 5px !important;
+      }
+      
+      #alertsContainer table {
+        font-size: 0.65rem !important;
+      }
+      
+      #alertsContainer th,
+      #alertsContainer td {
+        padding: 3px 4px !important;
+      }
+
+      .event-image-item img {
+        height: 150px !important;
+      }
+      
+      .event-image-info {
+        font-size: 11px !important;
+      }
+      
+      .event-image-actions button {
+        padding: 8px 6px !important;
+        font-size: 12px !important;
+      }
+      
+      .modal-header h3 {
+        font-size: 1.1rem !important;
+      }
+      
+      .camera-name {
+        font-size: 15px !important;
+      }
+
+      .max-storage-control > div {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 8px !important;
+        width: 100% !important;
+      }
+
+      .max-storage-control input {
+        flex: 1 !important;
+        width: auto !important;
+        min-width: 0 !important;
+      }
+
+      #setMaxStorageBtn {
+        width: auto !important;
+        min-width: 80px !important;
+        white-space: nowrap !important;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div id="cameraList" class="camera-grid"></div>
+  <div class="multi-view-wrapper">
+    <button onclick="toggleMultiView()">Multi View</button>
+    <div class="date-picker-container">
+      <select id="streamDateSelect" style="padding: 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--bg-primary); color: var(--text-primary);">
+        <option value="">Loading dates...</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <form id="addCameraForm">
+      <input type="text" name="cam_name" placeholder="Camera Name" required>
+      <input type="text" name="src" placeholder="RTSP Link" required>
+      <button type="submit">Add Camera</button>
+    </form>
+    <div class="analyse-section" style="margin-top: 15px;">
+      <form id="analyseFootageForm">
+        <input type="file" id="videoFileInput" accept="video/*" required>
+        <button type="submit" id="analyseBtn">
+          <span class="btn-spinner" style="display:none;"></span>
+          <span class="btn-text">Analyse Footage</span>
+        </button>
+      </form>
+    </div>
+    <div id="analyseProgressWrapper" style="display:none; margin-top:10px; width:100%;">
+      <div class="spinner" style="margin-bottom:6px;"></div>
+      <small id="analyseProgressText">Uploading 0%</small>
+    </div>
+    <div class="max-storage-control" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 10px;">
+      <label for="maxStorageInput" style="margin-bottom: 4px;">Set Max Storage (GB):</label>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <input type="number" id="maxStorageInput" min="1" style="width: 120px;">
+        <button type="button" id="setMaxStorageBtn">Set</button>
+      </div>
+    </div>
+    <div class="shutdown-wrapper">
+      <button class="shutdown-button" onclick="shutdownServer()">Shutdown Server</button>
+    </div>
+  </div>
+
+  <div class="events-section">
+    <h3>Detected Events</h3>
+    <div class="events-filter">
+      <div class="filter-group">
+        <label for="cameraFilter">Camera:</label>
+        <select id="cameraFilter">
+          <option value="">All Cameras</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="eventDateFilter">Date:</label>
+        <select id="eventDateFilter">
+          <option value="">Loading dates...</option>
+        </select>
+      </div>
+      
+      <label style="display: flex; align-items: center; gap: 6px; margin-left: 10px;">
+        <input type="checkbox" id="alertsOnlyCheckbox">
+        Alerts Only
+      </label>
+      
+  <div style="display: flex; align-items: center; gap: 6px; margin-left: 10px;">
+    <div style="position: relative; display: flex; align-items: center;">
+      <label for="imageUpload" style="cursor: pointer; padding: 6px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); display: flex; align-items: center; justify-content: center;" title="Search by image">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+      </svg>
+      </label>
+      <span class="tooltip">
+        <span class="tooltip-icon">?</span>
+        <span class="tooltiptext">Use an image to find similar objects in your footage.</span>
+      </span>
+      <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+    </div>
+
+    <input type="text" id="imageSearchInput" placeholder="Search text..." style="padding: 6px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+
+    <button onclick="searchEventImages()" id="searchButton" style="padding: 6px 12px; background: var(--accent-primary); color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+      <span id="searchText">Search</span>
+      <div id="searchSpinner" class="spinner" style="display: none;"></div>
+    </button>
+
+    <button onclick="clearSearch()" style="padding: 6px 12px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s;">Clear</button>
+  </div>
+  <div id="eventImagesContainer">
+    <p style="text-align:center; color:#666; width:100%;">No events detected yet.</p>
+  </div>
+
+  <div style="width:100vw; display:flex; justify-content:center; margin-top:12px;">
+    <button onclick="loadMoreEventImages()" id="loadMoreEventsBtn" style="padding: 6px 12px; background: var(--accent-primary); color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+      <span id="loadMoreText">More results</span>
+      <div id="loadMoreSpinner" class="spinner" style="display: none;"></div>
+    </button>
+  </div>
+  </div>
+  
+  <div id="multiView"></div>
+
+  <!-- Image Preview Modal -->
+  <div id="imagePreviewModal" class="modal">
+    <span class="close-preview" onclick="closeImagePreview()">&times;</span>
+    <img id="previewImage" src="" alt="Preview">
+  </div>
+  
+  <div id="zoneModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3>Edit Zone</h3>
+            <span class="close" onclick="closeZoneModal()">&times;</span>
+        </div>
+        <div style="position: relative; display: inline-block; max-width: 100%;">
+            <img id="zonePreview" src="/testcam/preview.png"
+                style="width: 100%; max-height: 400px; object-fit: contain; border: 1px solid #ccc; border-radius: 6px; user-select: none; -webkit-user-drag: none; cursor: crosshair;">
+            <div id="polygonOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+        </div>
+        <div style="margin: 10px 0; text-align: center; color: #666; font-size: 0.9rem;">
+            Click on the image to make a detection zone.
+        </div>
+        <div class="form-actions" style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 6px;">
+                    <input type="checkbox" id="outsideZoneCheckbox"> Detect outside of zone only
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px;">
+                    Detection Threshold:
+                    <input type="number" id="zoneThreshold" value="50" min="0" max="100" step="1" style="width: 60px;"> %
+                </label>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="clear-zone-button" onclick="clearPolygon()">Clear Zone</button>
+                <button type="button" onclick="closeZoneModal()">Cancel</button>
+                <button type="button" onclick="saveZone()">Save</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div id="alertsModal" class="modal">
+      <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h3>Detection & Counts - <span id="alertsCameraName"></span></h3>
+          <span class="close" onclick="closeAlertsModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+          <h3>Active Alerts</h3>
+          <div id="alertsContainer">
+            <p>Loading alerts...</p>
+            <div style="display: flex; gap: 10px; justify-content: flex-start; margin-top: 10px;">
+              <button onclick="openAlertModal()">Add Alert</button>
+            </div>
+          </div>
+
+          <div class="counts-wrapper" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 20px; margin: 20px 0;">
+            <table id="objectCounts" style="font-size: 1rem; border-collapse: collapse;">
+              <tbody></tbody>
+            </table>
+            <button onclick="resetCounts()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="alertModal" class="modal">
+      <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+          <h3>Add New Alert</h3>
+          <span class="close" onclick="closeAlertModal()">&times;</span>
+        </div>
+        <form id="alertForm" onsubmit="addAlert(event)" style="display: flex; flex-direction: column; align-items: center;">
+          <div class="form-group checkbox-group" style="width: 90%; text-align: center;">
+          <div class="form-group" style="width: 90%; text-align: center; margin-bottom: 15px;">
+          <label style="font-weight: 600; margin-bottom: 10px; display: block;">
+            <span class="tooltip">
+              Description & Threshold (Optional)
+              <span class="tooltip-icon">?</span>
+              <span class="tooltiptext">
+                Alert when an object of your description is seen (must select an object type and have CLIP enabled).
+              </span>
+            </span>
+          </label>
+
+            <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+              <input type="text" id="alertDesc" name="desc" placeholder="Description"
+                style="width: 180px; padding: 4px; text-align: center;">
+
+              <input type="number" id="alertThreshold" name="threshold" min="1"
+                placeholder="Threshold %"
+                style="width: 100px; padding: 4px; text-align: center;">
+            </div>
+          </div>
+            <div id="checkboxContainer" class="checkbox-container" style="display: grid; grid-template-columns: auto auto; gap: 8px 16px; max-height: 200px; overflow-y: auto; margin: 0 auto; padding: 8px; justify-content: center;"></div>
+          </div>
+          <div id="timeWindowSection" class="form-group" style="width: 90%; text-align: center; margin-top: 15px;">
+            <label style="font-weight: 600; margin-bottom: 10px; display: block;">Time Window (Optional)</label>
+            <div style="margin-bottom: 10px;">
+              <label for="maxCount">Trigger if there are</label>
+              <input type="number" id="maxCount" name="max" min="1" placeholder="1"
+                  style="width: 80px; margin: 0 6px; text-align: center; display: inline-block;">
+              <span>objects detected</span>
+            </div>
+            
+            <div>
+              <label for="windowMinutes">within this time window</label>
+              <input type="number" id="windowMinutes" name="window" min="1" placeholder="1" 
+                  style="width: 80px; margin: 0 6px; text-align: center; display: inline-block;">
+              <span>minutes</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="width: 90%; text-align: center;">
+            <label style="font-weight: 600; margin-bottom: 10px; display: block;">Schedule (Optional)</label>
+            <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+              <div>
+                <label for="scheduleFrom">From</label><br>
+                <input type="time" id="scheduleFrom" name="schedule_from" step="60" style="text-align: center;">
+              </div>
+              <div>
+                <label for="scheduleTo">To</label><br>
+                <input type="time" id="scheduleTo" name="schedule_to" step="60" style="text-align: center;">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="width: 90%; text-align: center;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin: 5px auto 0 auto; width: 120px;">
+              <label style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" name="days" value="0" checked> Mon
+              </label>
+              <label style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" name="days" value="1" checked> Tue
+              </label>
+              <label style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" name="days" value="2" checked> Wed
+              </label>
+              <label style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" name="days" value="3" checked> Thu
+              </label>
+              <label style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" name="days" value="4" checked> Fri
+              </label>
+              <label style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" name="days" value="5" checked> Sat
+              </label>
+              <label style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" name="days" value="6" checked> Sun
+              </label>
+            </div>
+          </div>
+
+          <div class="form-actions" style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; width: 100%;">
+            <button type="button" onclick="closeAlertModal()">Cancel</button>
+            <button type="submit">Save Alert</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  <svg style="display: none;">
+    <symbol id="icon-magnify" viewBox="0 0 24 24">
+      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </symbol>
+    
+    <symbol id="icon-play" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7z"/>
+    </symbol>
+
+    <symbol id="icon-cog" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 
+                1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 
+                1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 
+                1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 
+                1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 
+                1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 
+                1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 
+                1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </g>
+    </symbol>
+
+
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22a2 2 0 0 0 2-2H10a2 2 0 0 0 2 2z" />
+        <path d="M18 16V11a6 6 0 0 0-12 0v5l-2 2h16l-2-2z" />
+      </g>
+    </symbol>
+
+    <symbol id="icon-bin" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 6h18" />
+        <path d="M8 6V4h8v2" />
+        <path d="M6 6v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6" />
+        <line x1="10" y1="11" x2="10" y2="17" />
+        <line x1="14" y1="11" x2="14" y2="17" />
+      </g>
+    </symbol>
+ 
+    <symbol id="icon-play-all" viewBox="0 0 24 24">
+      <rect x="2" y="2" width="8" height="8" fill="currentColor"/>
+      <rect x="14" y="2" width="8" height="8" fill="currentColor"/>
+      <rect x="2" y="14" width="8" height="8" fill="currentColor"/>
+      <rect x="14" y="14" width="8" height="8" fill="currentColor"/>
+    </symbol>
+    </svg>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+
+    const descInput = document.getElementById("alertDesc");
+    const thresholdInput = document.getElementById("alertThreshold");
+    const timeWindowSection = document.getElementById("timeWindowSection");
+
+    function toggleTimeWindow() {
+      const hasDesc = descInput.value.trim() !== "";
+      const hasThreshold = thresholdInput.value.trim() !== "";
+
+      const disable = hasDesc || hasThreshold;
+
+      timeWindowSection.style.opacity = disable ? "0.5" : "1";
+      timeWindowSection.querySelectorAll("input").forEach(input => {
+        input.disabled = disable;
+      });
+    }
+
+    descInput.addEventListener("input", toggleTimeWindow);
+    thresholdInput.addEventListener("input", toggleTimeWindow);
+
+
+    let uploadedImageData = null;
+    const classLabels = {
+      0: 'person',
+      1: 'bicycle',
+      2: 'car',
+      3: 'motorbike',
+      4: 'aeroplane',
+      5: 'bus',
+      6: 'train',
+      7: 'truck',
+      8: 'boat',
+      14: 'bird',
+      15: 'cat',
+      16: 'dog',
+      17: 'horse',
+      18: 'sheep',
+      19: 'cow',
+      20: 'elephant',
+      21: 'bear',
+      22: 'zebra',
+      23: 'giraffe',
+      24: 'backpack',
+      25: 'umbrella',
+      26: 'handbag',
+      28: 'suitcase',
+      30: 'skis',
+      31: 'snowboard',
+      32: 'sports ball',
+      63: 'laptop',
+      64: 'mouse',
+      66: 'keyboard',
+      67: 'cell phone',
+    };
+
+    let eventStart = 0;
+    const EVENT_PAGE_SIZE = 50;
+    let hasMoreEvents = true;
+
+    function openAlertsModal(cameraName) {
+      currentAlertsCamera = cameraName;
+      document.getElementById('alertsCameraName').textContent = cameraName;
+      document.getElementById("alertsModal").style.display = "flex";
+      if (document.getElementById('checkboxContainer').children.length === 0) {
+        initAlertCheckboxes();
+      }
+      fetchAlerts();
+      fetchCounts();
+    }
+
+
+    function initAlertCheckboxes() {
+        const container = document.getElementById('checkboxContainer');
+        container.innerHTML = '';
+        
+        for (let i = 0; i < 80; i++) { // todo unhardcode 80 for other models
+            if (!classLabels[i]) continue;  // skip useless classes
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = i;
+            checkbox.name = 'class_ids';
+            checkbox.id = 'class_' + i;
+            const label = document.createElement('label');
+            label.htmlFor = 'class_' + i;
+            label.textContent = classLabels[i];
+            label.prepend(checkbox);
+            container.appendChild(label);
+        }
+    }
+
+    function fetchAlerts() {
+      if (!currentAlertsCamera) return;
+      
+      fetch(`/get_alerts?cam=${encodeURIComponent(currentAlertsCamera)}`)
+        .then(res => res.json())
+        .then(alerts => { 
+          const container = document.getElementById("alertsContainer");
+
+          if (!alerts || !alerts.length) {
+            container.innerHTML = `
+              <p>No alerts configured.</p>
+              <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                <button onclick="openAlertModal()">Add Alert</button>
+              </div>`;
+            return;
+          }
+          const descriptiveAlerts = alerts.filter(a => a.desc);
+          const normalAlerts = alerts.filter(a => !a.desc);
+          let html = "";
+          if (descriptiveAlerts.length > 0) {
+            html += `
+              <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+                <thead>
+                  <tr>
+                    <th style="text-align:left; padding:6px; border-bottom:1px solid #ccc;">Description</th>
+                    <th style="text-align:left; padding:6px; border-bottom:1px solid #ccc;">Threshold</th>
+                    <th style="text-align:left; padding:6px; border-bottom:1px solid #ccc;">Schedule</th>
+                    <th style="text-align:center; padding:6px; border-bottom:1px solid #ccc;">Enabled</th>
+                    <th style="text-align:center; padding:6px; border-bottom:1px solid #ccc;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+
+            for (const alert of descriptiveAlerts) {
+              let scheduleStr = "Always";
+              if (alert.sched && alert.sched.length > 0) {
+                const fromSec = alert.sched[0][0];
+                const toSec = alert.sched[0][1];
+                const fromH = Math.floor(fromSec / 3600);
+                const fromM = Math.floor((fromSec % 3600) / 60);
+                const toH = Math.floor(toSec / 3600);
+                const toM = Math.floor((toSec % 3600) / 60);
+                const timeRange =
+                  `${String(fromH).padStart(2,'0')}:${String(fromM).padStart(2,'0')} to ` +
+                  `${String(toH).padStart(2,'0')}:${String(toM).padStart(2,'0')}`;
+
+                const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+                const activeDays = alert.sched.slice(1)
+                  .map((on, idx) => on ? daysOfWeek[idx] : null)
+                  .filter(Boolean);
+
+                scheduleStr = activeDays.length === 7
+                  ? `${timeRange} (Daily)`
+                  : `${timeRange} (${activeDays.join(', ')})`;
+              }
+
+              const isOn = alert.hasOwnProperty("is_on") ? alert.is_on : true;
+
+              html += `
+                <tr>
+                  <td style="padding:6px; border-bottom:1px solid #eee;">
+                    ${alert.desc}
+                  </td>
+                  <td style="padding:6px; border-bottom:1px solid #eee;">
+                    ${alert.threshold ?? "-"}
+                  </td>
+                  <td style="padding:6px; border-bottom:1px solid #eee;">
+                    ${scheduleStr}
+                  </td>
+                  <td style="padding:6px; border-bottom:1px solid #eee; text-align:center;">
+                    <input type="checkbox"
+                      ${isOn ? "checked" : ""}
+                      onchange="toggleAlert('${alert.id}', this.checked, 'is_on')"
+                      style="transform:scale(1.2); cursor:pointer;">
+                  </td>
+                  <td style="padding:6px; border-bottom:1px solid #eee; text-align:center;">
+                    <button onclick="deleteAlert('${alert.id}')" style="padding:4px 8px;">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }
+
+            html += `</tbody></table>`;
+          }
+          let originalTable = "";
+
+          if (normalAlerts.length > 0) {
+            originalTable += `
+              <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+              <thead>
+                <tr>
+                  <th style="text-align:center; padding:6px; border-bottom:1px solid #ccc;">Max</th>
+                  <th style="text-align:left; padding:6px; border-bottom:1px solid #ccc;">Classes</th>
+                  <th style="text-align:left; padding:6px; border-bottom:1px solid #ccc;">Window</th>
+                  <th style="text-align:left; padding:6px; border-bottom:1px solid #ccc;">Schedule</th>
+                  <th style="text-align:center; padding:6px; border-bottom:1px solid #ccc;">Enabled</th>
+                  <th style="text-align:center; padding:6px; border-bottom:1px solid #ccc;">
+                    <span class="tooltip">
+                      Send Alerts
+                      <span class="tooltip-icon">?</span>
+                      <span class="tooltiptext">Enable to send notifications and clips to your clearcam app for this alert (requires premium).</span>
+                    </span>
+                  </th>
+                  <th style="text-align:center; padding:6px; border-bottom:1px solid #ccc;">
+                    <span class="tooltip">
+                      Zone
+                      <span class="tooltip-icon">?</span>
+                      <span class="tooltiptext">Enable to only trigger this alert when objects are detected within the defined zone.</span>
+                    </span>
+                  </th>
+                  <th style="text-align:center; padding:6px; border-bottom:1px solid #ccc;">Actions</th>
+                </tr>
+              </thead><tbody>`;
+          }
+
+          for (const alert of normalAlerts) {
+
+            const classNames = alert.classes.map(id => classLabels[id] ?? id).join(", ");
+            const h = Math.floor(alert.window / 3600);
+            const m = Math.floor((alert.window % 3600) / 60);
+            const s = alert.window % 60;
+            const windowStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            
+            let scheduleStr = "Always";
+            if (alert.sched && alert.sched.length > 0) {
+              const fromSec = alert.sched[0][0];
+              const toSec = alert.sched[0][1];
+              const fromH = Math.floor(fromSec / 3600);
+              const fromM = Math.floor((fromSec % 3600) / 60);
+              const toH = Math.floor(toSec / 3600);
+              const toM = Math.floor((toSec % 3600) / 60);
+              const timeRange = `${String(fromH).padStart(2,'0')}:${String(fromM).padStart(2,'0')} to ${String(toH).padStart(2,'0')}:${String(toM).padStart(2,'0')}`;
+
+              const daysOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+              const activeDays = alert.sched.slice(1).map((on, idx) => on ? daysOfWeek[idx] : null).filter(Boolean);
+              
+              if (activeDays.length === 7) {
+                scheduleStr = `${timeRange} (Daily)`;
+              } else {
+                scheduleStr = `${timeRange} (${activeDays.join(', ')})`;
+              }
+            }
+
+            const isOn = alert.hasOwnProperty("is_on") ? alert.is_on : true;
+            const isNotif = alert.hasOwnProperty("is_notif") ? alert.is_notif : true;
+            const isZone = alert.hasOwnProperty("zone") ? alert.zone : true;
+            
+            
+            originalTable += `<tr>
+              <td style="padding:6px; border-bottom:1px solid #eee; text-align:center;">${alert.max}</td>
+              <td style="padding:6px; border-bottom:1px solid #eee; max-width:150px; white-space:normal; word-wrap:break-word; line-height:1.3;">${classNames}</td>
+              <td style="padding:6px; border-bottom:1px solid #eee;">${windowStr}</td>
+              <td style="padding:6px; border-bottom:1px solid #eee;">${scheduleStr}</td>
+              <td style="padding:6px; border-bottom:1px solid #eee; text-align:center;">
+                <input type="checkbox" ${isOn ? "checked" : ""} 
+                  onchange="toggleAlert('${alert.id}', this.checked, 'is_on')" 
+                  style="transform:scale(1.2); cursor:pointer;">
+              </td>
+              <td style="padding:6px; border-bottom:1px solid #eee; text-align:center;">
+                <input type="checkbox" ${isNotif ? "checked" : ""} 
+                  onchange="toggleAlert('${alert.id}', this.checked, 'is_notif')" 
+                  style="transform:scale(1.2); cursor:pointer;">
+              </td>
+              <td style="padding:6px; border-bottom:1px solid #eee; text-align:center;">
+                <input type="checkbox" ${isZone ? "checked" : ""} 
+                  onchange="toggleAlert('${alert.id}', this.checked, 'zone')" 
+                  style="transform:scale(1.2); cursor:pointer;">
+              </td>
+              <td style="padding:6px; border-bottom:1px solid #eee; text-align:center;">
+                <button onclick="deleteAlert('${alert.id}')" style="padding:4px 8px;">Delete</button>
+              </td>
+            </tr>`;
+          }
+          
+          originalTable += `</tbody></table>
+            <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
+              <button onclick="openAlertModal()">Add Alert</button>
+            </div>`;
+
+          html += originalTable;
+
+          container.innerHTML = html;
+        })
+        .catch(err => {
+          console.error("Failed to fetch alerts:", err);
+          document.getElementById("alertsContainer").innerHTML = "<p>Error loading alerts.</p>";
+        });
+    }
+
+
+    function fetchCounts() {
+      if (!currentAlertsCamera) return;
+      
+      fetch(`/get_counts?cam=${encodeURIComponent(currentAlertsCamera)}`)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector("#objectCounts tbody");
+          tbody.innerHTML = "";
+
+          const entries = Object.entries(data).sort((a, b) => b[1] - a[1]);
+          if (!entries.length) {
+            tbody.innerHTML = "<tr><td colspan='2'>No detections.</td></tr>";
+            return;
+          }
+
+          for (const [label, count] of entries) {
+            tbody.innerHTML += `
+              <tr>
+                <td style="padding:6px 12px; border-bottom:1px solid #eee;">${label}</td>
+                <td style="padding:6px 12px; border-bottom:1px solid #eee;">${count}</td>
+              </tr>`;
+          }
+        })
+        .catch(err => {
+          console.error("Failed to fetch counts:", err);
+          document.querySelector("#objectCounts tbody").innerHTML = "<tr><td colspan='2'>Error fetching counts.</td></tr>";
+        });
+    }
+
+    function addAlert(event) {
+      event.preventDefault();
+      if (!currentAlertsCamera) return;
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      const desc = formData.get("desc") || "";
+      const threshold = formData.get("threshold") || "";
+
+      const windowMinutes = parseFloat(formData.get('window'));
+      const windowSeconds = windowMinutes ? Math.round(windowMinutes * 60) : null;
+
+      const maxCount = formData.get('max') || '1';
+      const checked = form.querySelectorAll('input[name="class_ids"]:checked');
+      const classIds = Array.from(checked).map(cb => cb.value).join(',');
+
+      const scheduleFrom = formData.get("schedule_from") || "00:00";
+      const scheduleTo = formData.get("schedule_to") || "23:59";
+
+      const toSeconds = (hhmm) => {
+        const parts = hhmm.split(":").map(Number);
+        const [h = 0, m = 0] = parts;
+        return h * 3600 + m * 60;
+      };
+
+      const fromSec = toSeconds(scheduleFrom);
+      const toSec = toSeconds(scheduleTo);
+
+      const dayChecks = form.querySelectorAll('input[name="days"]');
+      const dayBools = Array.from(dayChecks).map(cb => cb.checked);
+      const schedArray = [[fromSec, toSec], ...dayBools];
+
+      const params = new URLSearchParams({
+        cam: currentAlertsCamera,
+        max: maxCount,
+        class_ids: classIds,
+        sched: JSON.stringify(schedArray),
+        is_notif: 'true',
+        zone: 'true'
+      });
+
+      if (windowSeconds !== null) {
+        params.set('window', windowSeconds);
+      }
+
+      if (desc) {
+        params.set('desc', desc);
+      }
+
+      if (threshold) {
+        params.set('threshold', threshold);
+      }
+
+      fetch(`/edit_alert?${params.toString()}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to add alert");
+          return res.json();
+        })
+        .then(() => {
+          closeAlertModal();
+          form.reset();
+          fetchAlerts();
+        })
+        .catch(err => {
+          console.error("Add alert failed:", err);
+          alert("Failed to add alert.");
+        });
+    }
+
+
+    let currentAlertsCamera = null;
+    function toggleAlert(alertId, isChecked, field) {
+      if (!currentAlertsCamera) return;
+      
+      fetch(`/edit_alert?cam=${encodeURIComponent(currentAlertsCamera)}&id=${alertId}&${field}=${isChecked}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to toggle alert");
+          console.log(`Alert ${alertId} ${field} ${isChecked ? 'enabled' : 'disabled'}`);
+        })
+        .catch(err => {
+          console.error("Toggle alert failed:", err);
+          alert("Failed to toggle alert status.");
+          fetchAlerts();
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initAlertCheckboxes();
+    });
+
+    function resetCounts() {
+      if (!currentAlertsCamera) return;
+      
+      if (!confirm("Are you sure you want to reset the counts for this camera?")) return;
+      fetch(`/reset_counts?cam=${encodeURIComponent(currentAlertsCamera)}`)
+        .then(res => res.json())
+        .then(() => {
+          console.log("Counts reset");
+          fetchCounts();
+        })
+        .catch(err => {
+          console.error("Failed to reset counts:", err);
+          alert("Failed to reset counts.");
+        });
+    }
+
+    function closeAlertsModal() {
+      document.getElementById("alertsModal").style.display = "none";
+      currentAlertsCamera = null;
+    }
+
+    function deleteAlert(alertId) {
+      if (!currentAlertsCamera) return;
+      
+      fetch(`/edit_alert?cam=${encodeURIComponent(currentAlertsCamera)}&id=${alertId}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to delete alert");
+          fetchAlerts();
+        })
+        .catch(err => {
+          console.error("Delete failed:", err);
+          alert("Failed to delete alert.");
+        });
+    }
+
+    function openAlertModal() {
+      document.getElementById("alertModal").style.display = "flex";
+    }
+
+    function closeAlertModal() {
+      document.getElementById("alertModal").style.display = "none";
+    }
+
+    const zoneModal = document.getElementById("zoneModal");
+
+    const activeVideoStreams = new Map();
+    let wasHidden = false;
+    let currentStreamDate = new Date().toLocaleDateString('en-CA');
+    let currentEventDateFilter = new Date().toLocaleDateString('en-CA');
+    
+    let zoneEditorState = {
+        polygonSvg: null,
+        polygonPath: null,
+        firstPoint: null,
+        isPolygonComplete: false
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const dateSelect = document.getElementById('streamDateSelect');
+      const eventDateFilter = document.getElementById('eventDateFilter');
+      
+      function populateDateDropdown(dates, dropdown, isEventFilter = false) {
+        dropdown.innerHTML = '';
+        
+        if (isEventFilter) {
+          const allTimeOption = document.createElement('option');
+          allTimeOption.value = '';
+          allTimeOption.textContent = 'All time';
+          dropdown.appendChild(allTimeOption);
+        }
+        
+        dates.sort((a, b) => new Date(b) - new Date(a));
+        dates.forEach(date => {
+          const option = document.createElement('option');
+          option.value = date;
+          const dateObj = new Date(date);
+          const displayDate = dateObj.toLocaleDateString('en-US', {
+            weekday: 'short',  // Add this line for day of week
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+          option.textContent = displayDate;
+          dropdown.appendChild(option);
+        });
+        
+        const today = new Date().toISOString().split('T')[0];
+        if (dates.includes(today)) {
+          if (isEventFilter) {
+            dropdown.value = today;
+            currentEventDateFilter = today;
+          } else {
+            dropdown.value = today;
+            currentStreamDate = today;
+          }
+        } else if (dates.length > 0) {
+          if (isEventFilter) {
+            dropdown.value = dates[0];
+            currentEventDateFilter = dates[0];
+          } else {
+            dropdown.value = dates[0];
+            currentStreamDate = dates[0];
+          }
+        }
+      }
+      
+      fetch('/list_days')
+        .then(res => res.json())
+        .then(dates => {
+          if (dates && dates.length > 0) {
+            populateDateDropdown(dates, dateSelect, false);
+            populateDateDropdown(dates, eventDateFilter, true);
+          } else {
+            dateSelect.innerHTML = '<option value="">No dates available</option>';
+            eventDateFilter.innerHTML = '<option value="">No dates available</option>';
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load dates:', err);
+          dateSelect.innerHTML = '<option value="">Error loading dates</option>';
+          eventDateFilter.innerHTML = '<option value="">Error loading dates</option>';
+        });
+      
+      // Stream date dropdown listener
+      dateSelect.addEventListener('change', function() {
+        const selectedDate = this.value;
+        if (selectedDate) {
+          currentStreamDate = selectedDate;
+          console.log('Date changed to:', currentStreamDate);
+          restartAllStreams();
+        }
+      });
+      
+      // Event date filter dropdown listener
+      eventDateFilter.addEventListener('change', function() {
+        currentEventDateFilter = this.value;
+        console.log('Event date filter changed to:', currentEventDateFilter);
+        loadEventImages(false);
+      });
+      
+      loadEventImages();
+    });
+
+
+    function restartAllStreams() {
+      console.log('Restarting all streams for date:', currentStreamDate);
+
+      activeVideoStreams.forEach((streamInfo, camName) => {
+        cleanupCameraStream(camName);
+      });
+
+      if (window.currentCameras) {
+        window.currentCameras.forEach(camName => {
+          startCameraStream(camName);
+        });
+      }
+    }
+
+    async function fetchCameras() {
+      const res = await fetch('/list_cameras');
+      const camsObj = await res.json();
+      const cams = Object.keys(camsObj);
+      const container = document.getElementById("cameraList");
+
+      populateCameraFilter(cams);
+
+      const previousCameras = window.currentCameras || [];
+      window.currentCameras = cams;
+
+      const existingCards = new Map();
+      container.querySelectorAll('.camera-card').forEach(card => {
+        const camName = card.dataset.camera;
+        if (camName) {
+          existingCards.set(camName, card);
+        }
+      });
+
+      const newCards = [];
+
+      cams.forEach(cam => {
+        let card = existingCards.get(cam);
+        const camData = camsObj[cam];
+
+        if (card) {
+          const nameSpan = card.querySelector('.camera-name');
+
+          if (nameSpan) {
+            // If value is an object, print its keys and % values
+            if (camData && typeof camData === "object") {
+              const parts = Object.entries(camData).map(([key, value]) => {
+                if (typeof value === "number") {
+                  return `${key} ${Math.floor(value)}%`;
+                }
+                return key;
+              });
+
+              nameSpan.textContent = parts.join(" · ");
+            } else {
+              // null or non-object → just show camera name
+              nameSpan.textContent = cam;
+            }
+          }
+
+          newCards.push(card);
+        } else {
+          card = createCameraCard(cam);
+          newCards.push(card);
+        }
+      });
+
+      const currentCards = Array.from(container.children);
+      const needsUpdate =
+        newCards.length !== currentCards.length ||
+        !newCards.every((card, index) => currentCards[index] === card);
+
+      if (needsUpdate) {
+        container.innerHTML = '';
+        newCards.forEach(card => container.appendChild(card));
+      }
+
+      cams.forEach(cam => {
+        if (!activeVideoStreams.has(cam)) {
+          startCameraStream(cam);
+        }
+      });
+
+      previousCameras.forEach(cameraName => {
+        if (!cams.includes(cameraName)) {
+          cleanupCameraStream(cameraName);
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const cameraFilter = document.getElementById('cameraFilter');
+      cameraFilter.addEventListener('change', function() {
+        currentEventCameraFilter = this.value;
+        loadEventImages(false);
+      });
+      alertsOnlyCheckbox.addEventListener('change', function() {
+        alertsOnlyFilter = this.checked;
+        loadEventImages(false);
+      });
+    });
+
+    function createCameraCard(camName) {
+      const card = document.createElement('div');
+      card.className = 'camera-card';
+      card.dataset.camera = camName;
+      
+      const videoId = `video-${camName}`;
+      const placeholderId = `placeholder-${camName}`;
+      
+      card.innerHTML = `
+        <div class="video-container">
+          <video id="${videoId}" controls muted playsinline></video>
+          <div class="video-placeholder" id="${placeholderId}">Loading stream...</div>
+        </div>
+        <div class="camera-info">
+          <span class="camera-name">${camName}</span>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <div class="button-group">
+              <button class="icon-button" onclick="openSettingsEditor('${camName}')" title="Settings">
+                <span class="icon">
+                  <svg><use href="#icon-cog"></use></svg>
+                </span>
+              </button>
+              <button class="icon-button" onclick="openAlertsModal('${camName}')" title="Alerts">
+                <span class="icon">
+                  <svg><use href="#icon-bell"></use></svg>
+                </span>
+              </button>
+              <button class="icon-button delete-button" onclick="deleteCamera('${camName}')" title="Delete">
+                <span class="icon">
+                  <svg><use href="#icon-bin"></use></svg>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      setTimeout(() => initDetectionSettings(camName), 100);
+      return card;
+    }
+
+    let currentEditingCamera = null;
+    function openSettingsEditor(cameraName) {
+        currentEditingCamera = cameraName;
+        zoneEditorState = {
+            polygonSvg: null,
+            polygonPath: null,
+            firstPoint: null,
+            isPolygonComplete: false
+        };
+        const zonePreview = document.getElementById("zonePreview");
+        zonePreview.src = `/${cameraName}/preview.png`;
+        zoneModal.style.display = "flex";
+        initZoneEditor();
+        fetch(`/get_settings?cam=${cameraName}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Received settings data:", data);
+                const previewEl = document.getElementById("zonePreview");
+                previewEl.onload = function() {
+                    if (data && data.coords) {
+                        console.log("Loading coords:", data.coords);
+                        loadPolygon(data.coords, previewEl);
+                    }
+                };
+                if (previewEl.complete) {
+                    if (data && data.coords) {
+                        console.log("Loading coords:", data.coords);
+                        loadPolygon(data.coords, previewEl);
+                    }
+                }
+                
+                const outsideZoneCheckbox = document.getElementById("outsideZoneCheckbox");
+                if (data.outside !== undefined) {
+                    outsideZoneCheckbox.checked = data.outside;
+                } else if (data.length && data[0] && data[0].outside !== undefined) {
+                    outsideZoneCheckbox.checked = data[0].outside;
+                } else {
+                    outsideZoneCheckbox.checked = false;
+                }
+                
+                const thresholdInput = document.getElementById("zoneThreshold");
+                let rawThreshold = undefined;
+                if (data.threshold !== undefined) {
+                    rawThreshold = data.threshold;
+                } else if (data.length && data[0] && data[0].threshold !== undefined) {
+                    rawThreshold = data[0].threshold;
+                }
+                if (rawThreshold !== undefined) {
+                    if (rawThreshold <= 1) {
+                        thresholdInput.value = (rawThreshold * 100).toFixed(0);
+                    } else {
+                        thresholdInput.value = rawThreshold.toFixed(0);
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Failed to load zone:", err);
+            });
+    }
+
+    function closeZoneModal() {
+        zoneModal.style.display = "none";
+        currentEditingCamera = null;
+        zoneEditorState = {
+            polygonSvg: null,
+            polygonPath: null,
+            firstPoint: null,
+            isPolygonComplete: false
+        };
+    }
+
+    function isClickOnPoint(point, clickX, clickY) {
+        const pointRect = point.getBoundingClientRect();
+        const previewRect = document.getElementById("zonePreview").getBoundingClientRect();
+        const pointX = parseInt(point.style.left) + 6;
+        const pointY = parseInt(point.style.top) + 6;
+        const distance = Math.sqrt(Math.pow(clickX - pointX, 2) + Math.pow(clickY - pointY, 2));
+        return distance <= 10;
+    }
+
+    function initZoneEditor() {
+        const previewEl = document.getElementById("zonePreview");
+        clearPolygon();
+        initPolygonOverlay();
+        previewEl.addEventListener('click', handlePreviewClick);
+    }
+
+    function saveZone() {
+        if (!currentEditingCamera) {
+            console.error("No camera is currently being edited");
+            alert("Error: No camera selected for editing.");
+            return;
+        }
+
+        const previewEl = document.getElementById("zonePreview");
+        const points = Array.from(document.querySelectorAll('.polygon-point'));
+        
+        let coords = null;
+        if (points.length >= 3) {
+            const previewRect = previewEl.getBoundingClientRect();
+
+            coords = points.map(point => {
+                const pointRect = point.getBoundingClientRect();
+                const centerX = pointRect.left + pointRect.width / 2;
+                const centerY = pointRect.top + pointRect.height / 2;
+                
+                const x = ((centerX - previewRect.left) / previewRect.width);
+                const y = ((centerY - previewRect.top) / previewRect.height);
+                
+                return [x, y];
+            });
+        } else if (points.length === 0) {
+            coords = [0];
+        }
+        const outside = document.getElementById("outsideZoneCheckbox").checked;
+        const thresholdPercent = parseFloat(document.getElementById("zoneThreshold").value) || 50;
+        const threshold = thresholdPercent / 100;
+        
+        const params = new URLSearchParams({
+            cam: currentEditingCamera,
+            threshold: threshold.toFixed(2),
+            outside: outside
+        });
+        
+        if (coords) {
+            params.set('coords', JSON.stringify(coords));
+        }
+
+        fetch(`/edit_settings?${params.toString()}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to save settings");
+                console.log("Settings saved successfully for camera:", currentEditingCamera);
+                closeZoneModal();
+            })
+            .catch(err => {
+                console.error("Save settings failed:", err);
+                alert("Failed to save settings.");
+            });
+    }
+
+    function loadPolygon(coords, previewEl) {
+      const videoWidth = 1280;
+      const videoHeight = 720;
+      const img = document.getElementById("zonePreview");
+      if (img.complete) {
+        drawPolygonCoords(coords, img, previewEl);
+      } else {
+        img.addEventListener('load', function() {
+          drawPolygonCoords(coords, img, previewEl);
+        });
+      }
+    }
+
+    function drawPolygonCoords(coords, img, previewEl) {
+      const videoWidth = 1280;
+      const videoHeight = 720;
+      const displayedWidth = img.clientWidth;
+      const displayedHeight = img.clientHeight;
+      clearPolygon();     
+      coords.forEach(coord => {
+        const x = 1280 * (coord[0] / videoWidth) * displayedWidth;
+        const y = 720 * (coord[1] / videoHeight) * displayedHeight;
+        console.log("Creating point at:", x, y, "from coord:", coord);
+        createPoint(x, y);
+      });
+      updatePolygonLine();
+      if (coords.length >= 3) {
+        completePolygon();
+      }
+    }
+
+    function initPolygonOverlay() {
+        const overlay = document.getElementById("polygonOverlay");
+        overlay.innerHTML = '';
+        zoneEditorState.polygonSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        zoneEditorState.polygonSvg.style.width = '100%';
+        zoneEditorState.polygonSvg.style.height = '100%';
+        zoneEditorState.polygonSvg.style.position = 'absolute';
+        zoneEditorState.polygonSvg.style.top = '0';
+        zoneEditorState.polygonSvg.style.left = '0';
+        zoneEditorState.polygonSvg.style.pointerEvents = 'none';
+        
+        zoneEditorState.polygonPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        zoneEditorState.polygonPath.setAttribute('fill', 'none');
+        zoneEditorState.polygonPath.setAttribute('stroke', '#ff0000');
+        zoneEditorState.polygonPath.setAttribute('stroke-width', '2');
+        zoneEditorState.polygonPath.setAttribute('stroke-linejoin', 'round');
+        
+        zoneEditorState.polygonSvg.appendChild(zoneEditorState.polygonPath);
+        overlay.appendChild(zoneEditorState.polygonSvg);
+    }
+
+    function clearPolygon() {
+        const overlay = document.getElementById("polygonOverlay");
+        const points = overlay.querySelectorAll('.polygon-point');
+        points.forEach(point => point.remove());
+        zoneEditorState.firstPoint = null;
+        zoneEditorState.isPolygonComplete = false;
+        const svg = overlay.querySelector('svg');
+        if (svg) {
+            svg.remove();
+        }
+        initPolygonOverlay();
+        const previewEl = document.getElementById("zonePreview");
+        previewEl.addEventListener('click', handlePreviewClick);
+    }
+
+    function handlePreviewClick(e) {
+        const previewEl = document.getElementById("zonePreview");
+        const rect = previewEl.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        if (zoneEditorState.firstPoint && isClickOnPoint(zoneEditorState.firstPoint, x, y)) {
+            completePolygon();
+            return;
+        }
+        createPoint(x, y);
+        updatePolygonLine();
+    }
+
+    function completePolygon() {
+        console.log("Completing polygon");
+        if (zoneEditorState.polygonPath) {
+            zoneEditorState.polygonPath.setAttribute('fill', 'rgba(0, 255, 0, 0.3)');
+            zoneEditorState.polygonPath.setAttribute('stroke', '#00ff00');
+        }
+        const previewEl = document.getElementById("zonePreview");
+        previewEl.removeEventListener('click', handlePreviewClick);
+        zoneEditorState.isPolygonComplete = true;
+        updatePolygonLine();
+    }
+
+    function createPoint(x, y) {
+        const overlay = document.getElementById("polygonOverlay");
+        const point = document.createElement('div');
+        point.className = 'polygon-point';
+        point.style.position = 'absolute';
+        point.style.left = (x - 6) + 'px';
+        point.style.top = (y - 6) + 'px';
+        point.style.width = '12px';
+        point.style.height = '12px';
+        point.style.backgroundColor = '#ff0000';
+        point.style.borderRadius = '50%';
+        point.style.cursor = 'crosshair';
+        point.style.zIndex = '20';
+        point.style.border = '2px solid #ffffff';
+        point.style.boxShadow = '0 0 3px rgba(0,0,0,0.5)';
+        point.style.pointerEvents = 'auto';
+        if (!zoneEditorState.firstPoint) {
+            zoneEditorState.firstPoint = point;
+            point.style.backgroundColor = '#0000ff';
+            point.style.border = '2px solid #ffffff';
+            point.style.cursor = 'pointer';
+        }
+        if (zoneEditorState.firstPoint === point) {
+            point.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!zoneEditorState.isPolygonComplete) {
+                    completePolygon();
+                }
+            });
+        }
+        
+        overlay.appendChild(point);
+        return point;
+    }
+
+    function updatePolygonLine() {
+        const previewEl = document.getElementById("zonePreview");
+        const points = Array.from(document.querySelectorAll('.polygon-point'));
+        
+        if (points.length === 0) {
+            if (zoneEditorState.polygonPath) {
+                zoneEditorState.polygonPath.setAttribute('d', '');
+            }
+            zoneEditorState.firstPoint = null;
+            zoneEditorState.isPolygonComplete = false;
+            return;
+        }
+        const pathData = points.map((point, index) => {
+            const rect = point.getBoundingClientRect();
+            const previewRect = previewEl.getBoundingClientRect();
+            const x = rect.left - previewRect.left + 6; // Center of point
+            const y = rect.top - previewRect.top + 6;
+            return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
+        }).join(' ');
+        if (zoneEditorState.isPolygonComplete) {
+            if (zoneEditorState.polygonPath) {
+                zoneEditorState.polygonPath.setAttribute('d', pathData + ' Z');
+            }
+        } else {
+            if (zoneEditorState.polygonPath) {
+                zoneEditorState.polygonPath.setAttribute('d', pathData);
+            }
+        }
+    }
+
+    function startCameraStream(camName) {
+      const videoId = `video-${camName}`;
+      const placeholderId = `placeholder-${camName}`;
+      const video = document.getElementById(videoId);
+      const placeholder = document.getElementById(placeholderId);
+      
+      if (!video) {
+        console.warn(`Video element not found for ${camName}`);
+        return;
+      }
+      const checkbox = document.querySelector(`.show-detections-checkbox[data-camera="${camName}"]`);
+      const showDetections = checkbox ? checkbox.checked : false;
+      
+      const encoded = encodeURIComponent(camName);
+      const baseUrl = window.location.origin;
+      const streamUrl = `${baseUrl}/${encoded}/streams/${currentStreamDate}/stream.m3u8`;
+      
+      activeVideoStreams.set(camName, {
+        video: video,
+        hls: null,
+        streamUrl: streamUrl,
+        isPlaying: false
+      });
+      
+      waitForManifest(streamUrl, 30, 1000).then(ready => {
+        if (!ready) {
+          if (placeholder) placeholder.textContent = 'Stream unavailable';
+          return;
+        }
+        
+        if (placeholder) placeholder.style.display = 'none';
+        
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            manifestLoadingTimeOut: 20000,
+            manifestLoadingMaxRetry: Infinity,
+            manifestLoadingRetryDelay: 2000,
+          });
+
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
+
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            video.play().catch(e => console.log('Auto-play prevented:', e));
+            activeVideoStreams.get(camName).isPlaying = true;
+          });
+
+          hls.on(Hls.Events.ERROR, function (event, data) {
+            if (data && data.fatal) {
+              switch (data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  hls.startLoad(-1);
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  hls.recoverMediaError();
+                  break;
+                default:
+                  cleanupCameraStream(camName);
+                  if (placeholder) {
+                    placeholder.textContent = 'Stream error';
+                    placeholder.style.display = 'flex';
+                  }
+                  break;
+              }
+            }
+          });
+
+          activeVideoStreams.get(camName).hls = hls;
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = streamUrl;
+          video.addEventListener('loadedmetadata', function onMeta() {
+            video.removeEventListener('loadedmetadata', onMeta);
+            video.play().catch(e => console.log('Auto-play prevented:', e));
+            activeVideoStreams.get(camName).isPlaying = true;
+          });
+        } else {
+          if (placeholder) {
+            placeholder.textContent = 'HLS not supported';
+            placeholder.style.display = 'flex';
+          }
+        }
+      }).catch(error => {
+        console.error(`Error starting stream for ${camName}:`, error);
+        if (placeholder) {
+          placeholder.textContent = 'Stream error';
+          placeholder.style.display = 'flex';
+        }
+      });
+    }
+
+    const detectionIntervals = new Map();
+    function initDetectionSettings(cameraName) {
+      const checkbox = document.querySelector(`.show-detections-checkbox[data-camera="${cameraName}"]`);
+      if (!checkbox) return;
+      fetch(`/get_settings?cam=${encodeURIComponent(cameraName)}`)
+        .then(res => res.json())
+        .catch(err => {
+          console.error(`Failed to load detection settings for ${cameraName}:`, err);
+        });
+    }
+
+    function stopDetectionHeartbeat(cameraName) {
+      const interval = detectionIntervals.get(cameraName);
+      if (interval) {
+        clearInterval(interval);
+        detectionIntervals.delete(cameraName);
+        console.log(`Detection heartbeat stopped for ${cameraName}`);
+      }
+    }
+
+    function cleanupCameraStream(camName) {
+      const streamInfo = activeVideoStreams.get(camName);
+      if (streamInfo) {
+        if (streamInfo.hls && typeof streamInfo.hls.destroy === 'function') {
+          streamInfo.hls.destroy();
+        }
+        if (streamInfo.video) {
+          streamInfo.video.pause();
+          streamInfo.video.removeAttribute('src');
+          streamInfo.video.load();
+        }
+        activeVideoStreams.delete(camName);
+      }
+      stopDetectionHeartbeat(camName);
+    }
+
+    async function deleteCamera(cam) {
+      if (!confirm(`Are you sure you want to delete ${cam}?`)) return;
+      cleanupCameraStream(cam);
+      const res = await fetch(`/delete_camera?cam_name=${cam}`);
+      if (res.ok) {
+        fetchCameras();
+      } else {
+        alert("Failed to delete camera.");
+      }
+    }
+
+    async function shutdownServer() {
+      if (!confirm("Are you sure you want to shut down the server?")) return;
+      activeVideoStreams.forEach((stream, camName) => {
+        cleanupCameraStream(camName);
+      });
+      
+      const res = await fetch('/shutdown');
+      if (res.ok) {
+        alert("Server is shutting down...");
+      } else {
+        alert("Shutdown failed.");
+      }
+    }
+
+    async function fetchMaxStorage() {
+      try {
+        const res = await fetch('/get_max_storage');
+        const data = await res.json();
+        const input = document.getElementById('maxStorageInput');
+        if (input && data.max_gb !== undefined) {
+          input.value = data.max_gb;
+        }
+      } catch (e) {
+        console.error("Failed to fetch max storage:", e);
+      }
+    }
+
+    async function setMaxStorage() {
+      const input = document.getElementById('maxStorageInput');
+      const newVal = parseFloat(input.value);
+      if (!newVal || isNaN(newVal)) {
+        alert("Please enter a valid number");
+        return;
+      }
+      if (!confirm(`Set max storage to ${newVal} GB?`)) return;
+      await fetch(`/set_max_storage?max=${newVal}`);
+      fetchMaxStorage();
+    }
+    document.getElementById('setMaxStorageBtn').addEventListener('click', setMaxStorage);
+    fetchMaxStorage();
+    setInterval(fetchMaxStorage, 10000);
+
+    document.getElementById("addCameraForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const params = new URLSearchParams(new FormData(form)).toString();
+      await fetch(`/add_camera?${params}`);
+      form.reset();
+      fetchCameras();
+    });
+
+    async function waitForManifest(url, maxRetries = 30, delay = 2000) {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (res.ok) {
+            const text = await res.text();
+            const segmentCount = (text.match(/#EXTINF/g) || []).length;
+            if (segmentCount >= 1) {
+              console.log(`Manifest ready with ${segmentCount} segments`);
+              return true;
+            }
+          }
+        } catch (err) {
+          // ignore / retry
+        }
+        await new Promise(r => setTimeout(r, delay));
+      }
+      return false;
+    }
+
+    function attachHlsToVideo(url, video, startTime = null) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          manifestLoadingTimeOut: 20000,
+          manifestLoadingMaxRetry: Infinity,
+          manifestLoadingRetryDelay: 2000,
+          enableWorker: true,
+          lowLatencyMode: true,
+          backBufferLength: 0,
+          liveSyncDurationCount: 3,
+          liveMaxLatencyDurationCount: 10
+        });
+
+        hls.loadSource(url);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          if (startTime !== null) video.currentTime = startTime;
+          video.play().catch(()=>{});
+        });
+
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          if (data && data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hls.startLoad(-1);
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls.recoverMediaError();
+                break;
+              default:
+                hls.destroy();
+                break;
+            }
+          }
+        });
+
+        video._hlsInstance = hls;
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.addEventListener('loadedmetadata', function onMeta() {
+          video.removeEventListener('loadedmetadata', onMeta);
+          if (startTime !== null) video.currentTime = startTime;
+          video.play().catch(()=>{});
+        });
+      } else {
+        console.error("No HLS support in this browser.");
+      }
+    }
+
+    async function toggleMultiView() {
+      const container = document.getElementById('multiView');
+      if (container.classList.contains('active')) {
+        closeMultiView();
+        return;
+      }
+
+      if (!window.currentCameras || window.currentCameras.length === 0) {
+        alert("No cameras available.");
+        return;
+      }
+
+      container.classList.add('active');
+
+      const cams = window.currentCameras.slice();
+      const base = window.location.origin;
+
+      const count = cams.length;
+      const cols = Math.ceil(Math.sqrt(count));
+      const rows = Math.ceil(count / cols);
+      container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      container.style.gridTemplateRows = `repeat(${rows}, auto)`;
+      container.innerHTML = '';
+
+      cams.forEach(cam => {
+        const encoded = encodeURIComponent(cam);
+        const videoUrl = `${base}/${encoded}/streams/${currentStreamDate}/stream.m3u8`;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'video-wrapper';
+        const vid = document.createElement('video');
+        vid.autoplay = true;
+        vid.muted = true;
+        vid.playsInline = true;
+        vid.dataset.streamUrl = videoUrl;
+        wrapper.appendChild(vid);
+        container.appendChild(wrapper);
+
+        (async () => {
+          const ready = await waitForManifest(videoUrl, 60, 1000);
+          if (!ready) {
+            console.error("Stream never became available for", cam);
+            const notice = document.createElement('div');
+            notice.style.position = 'absolute';
+            notice.style.color = 'white';
+            notice.textContent = 'Stream unavailable';
+            wrapper.appendChild(notice);
+            return;
+          }
+
+          try {
+            attachHlsToVideo(videoUrl, vid, null);
+          } catch (e) {
+            console.error("Failed to attach HLS for", cam, e);
+          }
+        })();
+      });
+
+      if (container.requestFullscreen) container.requestFullscreen();
+    }
+
+    function closeMultiView() {
+      const container = document.getElementById('multiView');
+      container.querySelectorAll('video').forEach(vid => {
+        try {
+          if (vid._hlsInstance && typeof vid._hlsInstance.destroy === 'function') {
+            vid._hlsInstance.destroy();
+            delete vid._hlsInstance;
+          }
+          vid.pause();
+          vid.removeAttribute('src');
+          vid.load();
+        } catch (e) {
+          console.warn('Error cleaning video', e);
+        }
+      });
+
+      container.innerHTML = '';
+      container.classList.remove('active');
+      if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const mv = document.getElementById('multiView');
+        if (mv.classList.contains('active')) closeMultiView();
+      }
+    });
+
+    document.getElementById('multiView').addEventListener('click', e => {
+      if (e.target.id === 'multiView') closeMultiView();
+    });
+
+    let currentEventCameraFilter = '';
+    let alertsOnlyFilter = false;
+    function populateCameraFilter(cameras) {
+      const filter = document.getElementById('cameraFilter');
+      const currentValue = filter.value;
+      
+      filter.innerHTML = '<option value="">All Cameras</option>';
+      cameras.forEach(cam => {
+        const option = document.createElement('option');
+        option.value = cam;
+        option.textContent = cam;
+        filter.appendChild(option);
+      });
+      
+      if (cameras.includes(currentValue)) {
+        filter.value = currentValue;
+      }
+      currentEventCameraFilter = filter.value;
+    }
+
+    let currentImageSearchText = '';
+    function searchEventImages() {
+      const searchInput = document.getElementById('imageSearchInput');
+      const searchButton = document.getElementById('searchButton');
+      const searchText = document.getElementById('searchText');
+      const searchSpinner = document.getElementById('searchSpinner');
+      const magnifyButtons = document.querySelectorAll('.event-image-actions button[title="Search Similar"]');
+
+      uploadedImageData = null;
+      document.getElementById('imageUpload').value = '';
+      
+      currentImageSearchText = searchInput.value.trim();
+      searchText.textContent = 'Searching';
+      searchSpinner.style.display = 'block';
+      searchButton.disabled = true;
+      magnifyButtons.forEach(btn => btn.disabled = true);
+      
+      loadEventImages(false).finally(() => {
+        searchText.textContent = 'Search';
+        searchSpinner.style.display = 'none';
+        searchButton.disabled = false;
+        magnifyButtons.forEach(btn => btn.disabled = false);
+      });
+    }
+
+    function clearSearch() {
+      const searchButton = document.getElementById('searchButton');
+      const searchText = document.getElementById('searchText');
+      const searchSpinner = document.getElementById('searchSpinner');
+      const magnifyButtons = document.querySelectorAll('.event-image-actions button[title="Search Similar"]');
+      
+      searchText.textContent = 'Search';
+      searchSpinner.style.display = 'none';
+      searchButton.disabled = false;
+      magnifyButtons.forEach(btn => btn.disabled = false);
+      
+      document.getElementById('imageSearchInput').value = '';
+      document.getElementById('imageUpload').value = '';
+      
+      currentImageSearchText = '';
+      currentSimilarImage = null;
+      uploadedImageData = null;
+      
+      loadEventImages(false);
+    }
+
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const fullDataUrl = e.target.result;
+        uploadedImageData = fullDataUrl.split(',')[1];
+        
+        document.getElementById('imageSearchInput').value = '';
+        currentSimilarImage = null;
+        const searchText = document.getElementById('searchText');
+        const searchSpinner = document.getElementById('searchSpinner');
+        
+        searchText.textContent = 'Searching';
+        searchSpinner.style.display = 'block';
+        document.getElementById('searchButton').disabled = true;
+        
+        loadEventImages(false).finally(() => {
+          searchText.textContent = 'Search';
+          searchSpinner.style.display = 'none';
+          document.getElementById('searchButton').disabled = false;
+        });
+      };
+      
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('imageSearchInput').addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        searchEventImages();
+      }
+    });
+
+    document.querySelector('label[for="imageUpload"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('imageUpload').click();
+    });
+
+    
+    let previousEventImages = null;
+    async function loadEventImages(append = false) {
+      if (!append) {
+        eventStart = 0;
+        hasMoreEvents = true;
+      }
+      try {
+        const payload = {
+          folder: currentEventDateFilter || null,
+          cam: currentEventCameraFilter || null,
+          name_contains: alertsOnlyFilter ? "_notif" : null,
+          image_text: null,
+          similar_img: null,
+          uploaded_image: null
+        };
+        payload.start = eventStart;
+        payload.count = EVENT_PAGE_SIZE;
+
+        if (uploadedImageData) {
+          payload.uploaded_image = uploadedImageData;
+        } else if (currentSimilarImage) {
+          payload.similar_img = `/${currentSimilarImage}`;
+          currentSimilarImage = null;
+        } else if (currentImageSearchText) {
+          payload.image_text = currentImageSearchText;
+        }
+
+        const res = await fetch("/event_thumbs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        eventStart += data.images.length;
+        hasMoreEvents = data.images.length === EVENT_PAGE_SIZE;
+        document.getElementById('loadMoreEventsBtn').style.display =
+        hasMoreEvents ? 'inline-block' : 'none';
+
+        if (append && (!data.images || data.images.length === 0)) {
+          hasMoreEvents = false;
+          document.getElementById('loadMoreEventsBtn').style.display = 'none';
+          return;
+        }
+
+        if (data.images && data.images.length > 0) {
+          if (data.images[0].score !== undefined) {
+            data.images.sort((a, b) => b.score - a.score);
+          }
+          else if (!currentImageSearchText && !uploadedImageData && !currentSimilarImage) {
+            data.images.sort((a, b) => {
+              if (a.folder !== b.folder) {
+                return b.folder.localeCompare(a.folder);
+              }
+              return b.timestamp - a.timestamp;
+            });
+          }
+        }
+
+        if (JSON.stringify(data) === JSON.stringify(previousEventImages)) {
+          return;
+        }
+        previousEventImages = data;
+
+        const container = document.getElementById("eventImagesContainer");
+        
+        if (data.images && data.images.length > 0) {
+          let html = '';
+          [...data.images].forEach(img => {
+          const timeStr = secondsToTimeString(img.timestamp);
+          const hasScore = typeof img.score === 'number';
+          const scoreHtml = hasScore ? ` | Match: ${img.score.toFixed(2)}` : '';
+
+          html += `
+            <div class="event-image-item">
+              <img src="${img.url}" alt="Event" loading="lazy"
+                  onclick="viewImage('${img.url}')">
+
+              <div class="event-image-info">
+                <strong>${img.cam_name || 'Camera'}</strong><br>
+                <small>
+                  ${img.folder} ${timeStr}${scoreHtml}
+                </small>
+              </div>
+
+              <div class="event-image-actions">
+                ${
+                  hasScore
+                    ? `
+                      <button title="Search Similar"
+                              onclick="searchWithImage('${img.url}')">
+                        <span class="icon">
+                          <svg><use href="#icon-magnify"></use></svg>
+                        </span>
+                      </button>
+                    `
+                    : ''
+                }
+
+                <button title="Play"
+                        onclick="playVideoAtTime('${img.cam_name}', ${img.timestamp}, '${img.folder}')">
+                  <span class="icon">
+                    <svg><use href="#icon-play"></use></svg>
+                  </span>
+                </button>
+
+                <button title="Play All"
+                        onclick="playAllCamerasAtTime(${img.timestamp}, '${img.folder}')">
+                  <span class="icon">
+                    <svg><use href="#icon-play-all"></use></svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+          `;
+        });
+          if (append) {
+            container.insertAdjacentHTML('beforeend', html);
+          } else {
+            container.innerHTML = html;
+          }
+        } else {
+          container.innerHTML =
+            '<p style="text-align:center; color:#666; width:100%;">No events detected yet.</p>';
+        }
+
+      } catch (err) {
+        console.error("Failed to load event images:", err);
+        document.getElementById("eventImagesContainer").innerHTML =
+          '<p style="text-align:center; color:red; width:100%;">Error loading events.</p>';
+
+      } finally {
+        const searchButton = document.getElementById('searchButton');
+        const searchText = document.getElementById('searchText');
+        const searchSpinner = document.getElementById('searchSpinner');
+        const magnifyButtons =
+          document.querySelectorAll('.event-image-actions button[title="Search Similar"]');
+
+        searchText.textContent = 'Search';
+        searchSpinner.style.display = 'none';
+        searchButton.disabled = false;
+        magnifyButtons.forEach(btn => btn.disabled = false);
+      }
+    }
+
+    async function loadMoreEventImages() {
+      if (!hasMoreEvents) return;
+      const btn = document.getElementById('loadMoreEventsBtn');
+      const text = document.getElementById('loadMoreText');
+      const spinner = document.getElementById('loadMoreSpinner');
+      btn.disabled = true;
+      text.textContent = 'Searching';
+      spinner.style.display = 'block';
+
+      btn.style.display = 'flex';
+      btn.style.alignItems = 'center';
+      btn.style.justifyContent = 'center';
+      btn.style.gap = '4px';
+
+      try {
+        await loadEventImages(true);
+      } finally {
+        btn.disabled = false;
+        text.textContent = 'More results';
+        spinner.style.display = 'none';
+      }
+    }
+
+    document.getElementById("analyseFootageForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById("videoFileInput");
+        const file = fileInput.files[0];
+        if (!file) {
+          alert("Please select a video file.");
+          return;
+        }
+
+        const submitBtn = document.getElementById("analyseBtn");
+        const btnText = submitBtn.querySelector(".btn-text");
+        const btnSpinner = submitBtn.querySelector(".btn-spinner");
+
+        submitBtn.disabled = true;
+        btnSpinner.style.display = "inline-block";
+
+        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+        for (let i = 0; i < totalChunks; i++) {
+          const start = i * CHUNK_SIZE;
+          const end = Math.min(start + CHUNK_SIZE, file.size);
+          const chunk = file.slice(start, end);
+          const percent = Math.round(((i + 1) / totalChunks) * 100);
+          btnText.textContent = `Uploading ${percent}%`;
+          const res = await fetch(
+            `/analyse-footage?filename=${encodeURIComponent(file.name)}&chunk=${i}&total=${totalChunks}`,
+            {
+              method: "POST",
+              body: chunk,
+            }
+          );
+          if (!res.ok) {
+            alert("Upload failed");
+            resetButton();
+            return;
+          }
+        }
+        btnText.textContent = "Processing";
+        const camName = file.name.replace(/\.[^/.]+$/, "");
+        const srcPath = `data/cameras/${file.name}`;
+        await fetch(
+          `/add_camera?cam_name=${encodeURIComponent(camName)}&src=${encodeURIComponent(srcPath)}`
+        );
+        setTimeout(resetButton, 800);
+        fileInput.value = "";     
+        function resetButton() {
+          submitBtn.disabled = false;
+          btnSpinner.style.display = "none";
+          btnText.textContent = "Analyse Footage";
+        }
+      });
+
+    let currentSimilarImage = null;
+    function searchWithImage(imageUrl) {
+      const searchButton = document.getElementById('searchButton');
+      const searchText = document.getElementById('searchText');
+      const searchSpinner = document.getElementById('searchSpinner');
+      const magnifyButtons = document.querySelectorAll('.event-image-actions button[title="Search Similar"]');
+      
+      const match = imageUrl.match(/\/([^/]+\/objects\/[^/]+\/[^/]+\.jpg)/);
+      if (!match) return;
+      document.querySelector('.events-section').scrollIntoView({ behavior: 'smooth' });
+      searchText.textContent = 'Searching';
+      searchSpinner.style.display = 'block';
+      searchButton.disabled = true;
+      magnifyButtons.forEach(btn => btn.disabled = true);
+      
+      uploadedImageData = null;
+      document.getElementById('imageUpload').value = '';
+
+      currentSimilarImage = match[1];
+      document.getElementById('imageSearchInput').value = '';
+      
+      loadEventImages(false).finally(() => {
+        searchText.textContent = 'Search';
+        searchSpinner.style.display = 'none';
+        searchButton.disabled = false;
+        magnifyButtons.forEach(btn => btn.disabled = false);
+      });
+    }
+
+    function secondsToTimeString(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+      const pad = (num) => num.toString().padStart(2, '0');
+      return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+    }
+
+    function viewImage(imageSrc) {
+      const previewModal = document.getElementById("imagePreviewModal");
+      const previewImage = document.getElementById("previewImage");
+      previewImage.src = imageSrc;
+      previewModal.style.display = "flex";
+    }
+
+    function closeImagePreview() {
+      document.getElementById("imagePreviewModal").style.display = "none";
+    }
+
+    function playVideoAtTime(camName, timestamp, folder) {
+      if(folder != document.getElementById('streamDateSelect').value){
+        document.getElementById('streamDateSelect').value = folder;
+        currentStreamDate = folder;
+        restartAllStreams();
+      }
+      const videoId = `video-${camName}`;
+      const video = document.getElementById(videoId);      
+      if (video) {
+        video.currentTime = timestamp;
+        video.play().catch(e => console.log('Auto-play prevented:', e));
+        const cameraCard = video.closest('.camera-card');
+        if (cameraCard) {
+          cameraCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          cameraCard.style.boxShadow = '0 0 0 3px #007bff';
+          setTimeout(() => {
+            cameraCard.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          }, 2000);
+        }
+      } else {
+        alert(`Camera ${camName} not found in current view`);
+      }
+    }
+
+    function playAllCamerasAtTime(timestamp, folder) {
+      if(folder != document.getElementById('streamDateSelect').value){
+        document.getElementById('streamDateSelect').value = folder;
+        currentStreamDate = folder;
+        restartAllStreams();
+      }
+      if (window.currentCameras && window.currentCameras.length > 0) {
+        window.currentCameras.forEach(camName => {
+          const videoId = `video-${camName}`;
+          const video = document.getElementById(videoId);
+          if (video) {
+            video.currentTime = timestamp;
+            video.play().catch(e => console.log(`Auto-play prevented for ${camName}:`, e));
+          }
+        });
+        const firstCameraCard = document.querySelector('.camera-card');
+        if (firstCameraCard) {
+          firstCameraCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        document.querySelectorAll('.camera-card').forEach(card => {
+          card.style.boxShadow = '0 0 0 3px #6f42c1';
+          setTimeout(() => {
+            card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          }, 2000);
+        });
+      } else {
+        alert("No cameras available to play");
+      }
+    }
+    window.addEventListener("click", function(event) {
+      const modal = document.getElementById("imagePreviewModal");
+      if (event.target === modal) {
+        closeImagePreview();
+      }
+    });
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeImagePreview();
+      }
+    });
+
+    fetchCameras();
+    setInterval(fetchCameras, 5000);
+  </script>
+</body>
+</html>
